@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -24,13 +23,15 @@ public class BrackEm extends JFrame implements ActionListener{
 	 */
 	
 	// General
+	static boolean debug = true;
 	static BrackEm frame; // Static frame for easy reference
-	protected Container cp;
+	protected static Container cp;
 	protected static CardLayout cardLayout;
 	protected static JPanel cards; // Panel that uses CardLayout
 	protected BracketPanel winPanel;
 	protected BracketPanel losePanel; 
-	protected BracketPanel finalPanel; 
+	protected BracketPanel finalPanel;
+	protected boolean panelExist = false;
 
 	// Coordinate info
 	static int fWidth;
@@ -128,31 +129,39 @@ public class BrackEm extends JFrame implements ActionListener{
 //			}
         if (e.getActionCommand().equals("New"))//new game on the menu bar
         {
-        	System.out.println("New");
+        	if (debug){
+        		System.out.println("New");
+        	}
         	
         	String result = JOptionPane.showInputDialog(frame,
         			"How many players?",
         			"Create a bracket",
         			JOptionPane.OK_CANCEL_OPTION
         			);
-        	try {
-        		System.out.println(Integer.parseInt(result));
-        		
-        		
-        		genPanels();
-        		
-        	} catch(java.lang.NumberFormatException e1) { 
-        		JOptionPane.showMessageDialog(frame,
-        				"Invalid entry!",
-        				"Create a bracket",
-        				JOptionPane.OK_CANCEL_OPTION
-        				);
+        	
+        	if (result != null) {
+        		try {
+        			if (Integer.parseInt(result) < 3 || Integer.parseInt(result) > 31 ){
+        				invalidNumDiag();
+        			} else {
+            			int totalPlayers = Integer.parseInt(result);
+            			
+            			new BracketCalc(totalPlayers);
+            			
+        				genPanels();
+        			}
+
+        		} catch(java.lang.NumberFormatException e1) { 
+        			invalidDiag();
+        		}
         	}
         }
         
         if (e.getActionCommand().equals("Print"))//new game on the menu bar
         {
-        	System.out.println("Print");
+        	if (debug){
+        		System.out.println("Print");
+        	}
         }
         
         if (e.getActionCommand().equals("Exit"))//new game on the menu bar
@@ -172,43 +181,76 @@ public class BrackEm extends JFrame implements ActionListener{
         
         if (e.getActionCommand().equals("Winner's"))//new game on the menu bar
         {
-        	System.out.println("Winner's");
+        	if (debug){
+        		System.out.println("Winner's");
+        	}
         	
             BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
         }
         
         if (e.getActionCommand().equals("Loser's"))//new game on the menu bar
         {
-        	System.out.println("Loser's");
+        	if (debug){
+        		System.out.println("Loser's");
+        	}
         	
         	BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
         }
         
         if (e.getActionCommand().equals("Finals"))//new game on the menu bar
         {
-        	System.out.println("Finals");
+        	if (debug){
+        		System.out.println("Finals");
+        	}
         	
         	BrackEm.cardLayout.show(BrackEm.cards, "FPanel");
         }
 	}
 	
 	private void genPanels(){
+
+		if (panelExist){
+			BrackEm.cp.remove(BrackEm.cards);
+			cards = null;
+			winPanel = null;
+			losePanel = null;
+			finalPanel = null;
+		}
+
 		winPanel = new BracketPanel("WPanel");
 		losePanel = new BracketPanel("LPanel");
 		finalPanel = new BracketPanel("FPanel");
 		cardLayout = new CardLayout();
 		cards = new JPanel(cardLayout);
-        cards.add(winPanel, "WPanel");
-        cards.add(losePanel, "LPanel");
-        cards.add(finalPanel, "FPanel");
-        cp.add(cards);
-        
-        winMI.setEnabled(true);
-        loseMI.setEnabled(true);
-        finalMI.setEnabled(true);
-        
-        BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
-        BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
+		cards.add(winPanel, "WPanel");
+		cards.add(losePanel, "LPanel");
+		cards.add(finalPanel, "FPanel");
+		cp.add(cards);
+
+		winMI.setEnabled(true);
+		loseMI.setEnabled(true);
+		finalMI.setEnabled(true);
+
+		BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
+		BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
+
+		panelExist = true;
+	}
+	
+	private void invalidDiag(){
+		JOptionPane.showMessageDialog(frame,
+				"Invalid entry!",
+				"Create a bracket",
+				JOptionPane.OK_CANCEL_OPTION
+				);
+	}
+	
+	private void invalidNumDiag(){
+		JOptionPane.showMessageDialog(frame,
+				"Only 3 to 31 players are allowed.",
+				"Create a bracket",
+				JOptionPane.OK_CANCEL_OPTION
+				);
 	}
 	
 	public static void main(String[] args) {
