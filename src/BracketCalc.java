@@ -127,10 +127,10 @@ public class BracketCalc {
 		return valid;
 	}
 	
-	private int ceilLog2(int a){
-		int result = (int) Math.ceil(Math.log(a)/Math.log(2));
-		return result;
-	}
+//	private int ceilLog2(int a){
+//		int result = (int) Math.ceil(Math.log(a)/Math.log(2));
+//		return result;
+//	}
 	
 	int [] getIntArray() {
 		return twoN;
