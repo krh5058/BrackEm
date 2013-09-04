@@ -4,7 +4,7 @@
 
 public class BracketCalc {
 	
-	int[] twoN = {2, 4, 8, 16};
+	final static int[] twoN = {2, 4, 8, 16};
 	int totalPlayersW;
 	int secondRoundPlayersW;
 	int firstRoundPlayersW;
@@ -15,6 +15,36 @@ public class BracketCalc {
 	int firstRoundByL;
 	int totalRoundsW;
 	int totalRoundsL;
+	
+	static int log2(int a){
+		int result = 0;
+		boolean valid = isBase2(a);
+		
+		if (valid){
+			result = (int) (Math.log(a)/Math.log(2));
+		}
+		
+		return result;
+	}
+	
+	static boolean isBase2(int a){
+		boolean valid = false;
+		for( int i : getIntArray() )
+			if (a == i){
+				valid = true;
+				break;
+			}
+		return valid;
+	}
+	
+//	private int ceilLog2(int a){
+//		int result = (int) Math.ceil(Math.log(a)/Math.log(2));
+//		return result;
+//	}
+	
+	static int [] getIntArray() {
+		return twoN;
+	}
 	
 	public BracketCalc(int tpIn){
 	
@@ -106,34 +136,15 @@ public class BracketCalc {
 		}
 	}
 	
-	private int log2(int a){
-		int result = 0;
-		boolean valid = isBase2(a);
-		
-		if (valid){
-			result = (int) (Math.log(a)/Math.log(2));
-		}
-		
-		return result;
+	int getTotalRoundsW(){
+		return this.totalRoundsW;
+	}
+
+	int getSecondPlayersW(){
+		return this.secondRoundPlayersW;
 	}
 	
-	private boolean isBase2(int a){
-		boolean valid = false;
-		for( int i : getIntArray() )
-			if (a == i){
-				valid = true;
-				break;
-			}
-		return valid;
+	int getFirstRoundByL(){
+		return this.firstRoundByL;
 	}
-	
-//	private int ceilLog2(int a){
-//		int result = (int) Math.ceil(Math.log(a)/Math.log(2));
-//		return result;
-//	}
-	
-	int [] getIntArray() {
-		return twoN;
-	}
-	
 }

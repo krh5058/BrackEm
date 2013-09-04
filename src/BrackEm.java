@@ -1,16 +1,15 @@
-import java.awt.CardLayout;
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 public class BrackEm extends JFrame implements ActionListener{
 
@@ -26,12 +25,16 @@ public class BrackEm extends JFrame implements ActionListener{
 	static boolean debug = true;
 	static BrackEm frame; // Static frame for easy reference
 	protected static Container cp;
-	protected static CardLayout cardLayout;
-	protected static JPanel cards; // Panel that uses CardLayout
+	protected JTabbedPane tabbedPane;
+//	protected static CardLayout cardLayout;
+//	protected static JPanel cards; // Panel that uses CardLayout
 	protected BracketPanel winPanel;
 	protected BracketPanel losePanel; 
 	protected BracketPanel finalPanel;
 	protected boolean panelExist = false;
+	
+	// Data
+	static BracketCalc bracketData;
 
 	// Coordinate info
 	static int fWidth;
@@ -43,22 +46,19 @@ public class BrackEm extends JFrame implements ActionListener{
 	private JMenuItem newMI;
 	private JMenuItem printMI;
 	private JMenuItem exitMI;
-	private JMenu viewMenu;
-	private JMenuItem winMI;
-	private JMenuItem loseMI;
-	private JMenuItem finalMI;
+//	private JMenu viewMenu;
+//	private JMenuItem winMI;
+//	private JMenuItem loseMI;
+//	private JMenuItem finalMI;
 	
 	public BrackEm(){
 		super("BrackEm");
+
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Dimension screenSize = toolkit.getScreenSize();
 		fWidth = screenSize.width;
 		fHeight = screenSize.height;
 		
-		// Panel set-up
-		cp=getContentPane();
-		cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
-
         // Add "File"
         newMI = new JMenuItem("New");
         newMI.setActionCommand("New");
@@ -77,32 +77,43 @@ public class BrackEm extends JFrame implements ActionListener{
         fileMenu.add(printMI);
         fileMenu.add(exitMI);
         
-        // Add "View"
-        winMI = new JMenuItem("Winner's");
-        winMI.setActionCommand("Winner's");
-        winMI.setEnabled(false);
-        winMI.addActionListener(this);
-        
-        loseMI = new JMenuItem("Loser's");
-        loseMI.setActionCommand("Loser's");
-        loseMI.setEnabled(false);
-        loseMI.addActionListener(this);
-        
-        finalMI = new JMenuItem("Finals");
-        finalMI.setActionCommand("Finals");
-        finalMI.setEnabled(false);
-        finalMI.addActionListener(this);
-        
-        viewMenu = new JMenu("View");
-        viewMenu.add(winMI);
-        viewMenu.add(loseMI);
-        viewMenu.add(finalMI);
+//        // Add "View"
+//        winMI = new JMenuItem("Winner's");
+//        winMI.setActionCommand("Winner's");
+//        winMI.setEnabled(false);
+//        winMI.addActionListener(this);
+//        
+//        loseMI = new JMenuItem("Loser's");
+//        loseMI.setActionCommand("Loser's");
+//        loseMI.setEnabled(false);
+//        loseMI.addActionListener(this);
+//        
+//        finalMI = new JMenuItem("Finals");
+//        finalMI.setActionCommand("Finals");
+//        finalMI.setEnabled(false);
+//        finalMI.addActionListener(this);
+//        
+//        viewMenu = new JMenu("View");
+//        viewMenu.add(winMI);
+//        viewMenu.add(loseMI);
+//        viewMenu.add(finalMI);
         
         // Add menu Bar
         menuBar = new JMenuBar();
         menuBar.add(fileMenu);
-        menuBar.add(viewMenu);
+//        menuBar.add(viewMenu);
         setJMenuBar(menuBar);
+		
+		// Content pane set-up
+		cp=getContentPane();
+		tabbedPane = new JTabbedPane();
+		winPanel = new BracketPanel("Winners");
+		losePanel = new BracketPanel("Losers");
+		finalPanel = new BracketPanel("Finals");
+		tabbedPane.addTab("Winners Bracket", winPanel);
+		tabbedPane.addTab("Losers Bracket", losePanel);
+		tabbedPane.addTab("Finals Bracket", finalPanel);
+		cp.add(tabbedPane, BorderLayout.CENTER);
 		
 		// Frame initialization
 		setResizable(false);
@@ -146,7 +157,7 @@ public class BrackEm extends JFrame implements ActionListener{
         			} else {
             			int totalPlayers = Integer.parseInt(result);
             			
-            			new BracketCalc(totalPlayers);
+            			bracketData = new BracketCalc(totalPlayers);
             			
         				genPanels();
         			}
@@ -179,62 +190,55 @@ public class BrackEm extends JFrame implements ActionListener{
         	}
         }
         
-        if (e.getActionCommand().equals("Winner's"))//new game on the menu bar
-        {
-        	if (debug){
-        		System.out.println("Winner's");
-        	}
-        	
-            BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
-        }
-        
-        if (e.getActionCommand().equals("Loser's"))//new game on the menu bar
-        {
-        	if (debug){
-        		System.out.println("Loser's");
-        	}
-        	
-        	BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
-        }
-        
-        if (e.getActionCommand().equals("Finals"))//new game on the menu bar
-        {
-        	if (debug){
-        		System.out.println("Finals");
-        	}
-        	
-        	BrackEm.cardLayout.show(BrackEm.cards, "FPanel");
-        }
+//        if (e.getActionCommand().equals("Winner's"))//new game on the menu bar
+//        {
+//        	if (debug){
+//        		System.out.println("Winner's");
+//        	}
+//        	
+//            BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
+//        }
+//        
+//        if (e.getActionCommand().equals("Loser's"))//new game on the menu bar
+//        {
+//        	if (debug){
+//        		System.out.println("Loser's");
+//        	}
+//        	
+//        	BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
+//        }
+//        
+//        if (e.getActionCommand().equals("Finals"))//new game on the menu bar
+//        {
+//        	if (debug){
+//        		System.out.println("Finals");
+//        	}
+//        	
+//        	BrackEm.cardLayout.show(BrackEm.cards, "FPanel");
+//        }
 	}
 	
 	private void genPanels(){
 
-		if (panelExist){
-			BrackEm.cp.remove(BrackEm.cards);
-			cards = null;
-			winPanel = null;
-			losePanel = null;
-			finalPanel = null;
-		}
+//		if (panelExist){
+//			BrackEm.cp.remove(tabbedPane);
+////			cards = null;
+//			winPanel = null;
+//			losePanel = null;
+//			finalPanel = null;
+//		}
 
-		winPanel = new BracketPanel("WPanel");
-		losePanel = new BracketPanel("LPanel");
-		finalPanel = new BracketPanel("FPanel");
-		cardLayout = new CardLayout();
-		cards = new JPanel(cardLayout);
-		cards.add(winPanel, "WPanel");
-		cards.add(losePanel, "LPanel");
-		cards.add(finalPanel, "FPanel");
-		cp.add(cards);
+		winPanel.populateWinPanel();
+		
+//		winMI.setEnabled(true);
+//		loseMI.setEnabled(true);
+//		finalMI.setEnabled(true);
 
-		winMI.setEnabled(true);
-		loseMI.setEnabled(true);
-		finalMI.setEnabled(true);
+//		BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
+//		BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
 
-		BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
-		BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
-
-		panelExist = true;
+//		panelExist = true;
+//		repaint();
 	}
 	
 	private void invalidDiag(){
