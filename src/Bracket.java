@@ -19,24 +19,29 @@ public class Bracket extends JLabel implements MouseListener{
 	 */
 	
 	String ID;
+	String placement;
 	String displayName = "empty";
 	int maxCharDisp = 15;
 	Font labelFont;
 	int labelWidth;
 	int labelHeight;
+	boolean center = false;
 	boolean upper = true;
 	
 	Border raisedbevel = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
 	
 	private static final long serialVersionUID = 1L;
 
-	Bracket(int x, int y) {
+	Bracket(int x, int y, boolean individual, boolean pairingtype) {
 		super();
 		this.setText(displayName);
 		
 		// Format
 		labelWidth = x;
 		labelHeight = y;
+		center = individual;
+		upper = pairingtype;
+		
 		setMaximumSize(new Dimension(labelWidth,labelHeight));
 		setPreferredSize(new Dimension(labelWidth,labelHeight));
 		setMinimumSize(new Dimension(labelWidth,labelHeight));
@@ -66,7 +71,7 @@ public class Bracket extends JLabel implements MouseListener{
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-    	String result = JOptionPane.showInputDialog(null,
+    	String result = JOptionPane.showInputDialog(BrackEm.frame,
     			"Edit player",
     			"Edit player",
     			JOptionPane.OK_CANCEL_OPTION
@@ -111,10 +116,13 @@ public class Bracket extends JLabel implements MouseListener{
 	    g2.drawLine(0, labelHeight/2, getStringX()[0]-2, labelHeight/2); // Line from left to text
 	    g2.drawLine(getStringX()[1]+2, labelHeight/2, labelWidth, labelHeight/2); // Line from text to right
 	    
-	    if (upper){
-	    	g2.drawLine(labelWidth-2,labelHeight/2,labelWidth-2,labelHeight); // Line moving downwards
+	    if (center){
 	    } else {
-	    	g2.drawLine(labelWidth-2,labelHeight/2,labelWidth-2,0); // Line moving upwards
+	    	if (upper){
+	    		g2.drawLine(labelWidth-2,labelHeight/2,labelWidth-2,labelHeight); // Line moving downwards
+	    	} else {
+	    		g2.drawLine(labelWidth-2,labelHeight/2,labelWidth-2,0); // Line moving upwards
+	    	}
 	    }
 	}
 	

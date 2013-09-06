@@ -139,7 +139,11 @@ public class BracketCalc {
 	int getTotalRoundsW(){
 		return this.totalRoundsW;
 	}
-
+	
+	int getFirstPlayersW(){
+		return this.firstRoundPlayersW;
+	}
+	
 	int getSecondPlayersW(){
 		return this.secondRoundPlayersW;
 	}

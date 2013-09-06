@@ -26,8 +26,6 @@ public class BrackEm extends JFrame implements ActionListener{
 	static BrackEm frame; // Static frame for easy reference
 	protected static Container cp;
 	protected JTabbedPane tabbedPane;
-//	protected static CardLayout cardLayout;
-//	protected static JPanel cards; // Panel that uses CardLayout
 	protected BracketPanel winPanel;
 	protected BracketPanel losePanel; 
 	protected BracketPanel finalPanel;
@@ -46,10 +44,6 @@ public class BrackEm extends JFrame implements ActionListener{
 	private JMenuItem newMI;
 	private JMenuItem printMI;
 	private JMenuItem exitMI;
-//	private JMenu viewMenu;
-//	private JMenuItem winMI;
-//	private JMenuItem loseMI;
-//	private JMenuItem finalMI;
 	
 	public BrackEm(){
 		super("BrackEm");
@@ -77,43 +71,14 @@ public class BrackEm extends JFrame implements ActionListener{
         fileMenu.add(printMI);
         fileMenu.add(exitMI);
         
-//        // Add "View"
-//        winMI = new JMenuItem("Winner's");
-//        winMI.setActionCommand("Winner's");
-//        winMI.setEnabled(false);
-//        winMI.addActionListener(this);
-//        
-//        loseMI = new JMenuItem("Loser's");
-//        loseMI.setActionCommand("Loser's");
-//        loseMI.setEnabled(false);
-//        loseMI.addActionListener(this);
-//        
-//        finalMI = new JMenuItem("Finals");
-//        finalMI.setActionCommand("Finals");
-//        finalMI.setEnabled(false);
-//        finalMI.addActionListener(this);
-//        
-//        viewMenu = new JMenu("View");
-//        viewMenu.add(winMI);
-//        viewMenu.add(loseMI);
-//        viewMenu.add(finalMI);
-        
         // Add menu Bar
         menuBar = new JMenuBar();
         menuBar.add(fileMenu);
-//        menuBar.add(viewMenu);
         setJMenuBar(menuBar);
-		
-		// Content pane set-up
+
+        // Content pane set-up
 		cp=getContentPane();
-		tabbedPane = new JTabbedPane();
-		winPanel = new BracketPanel("Winners");
-		losePanel = new BracketPanel("Losers");
-		finalPanel = new BracketPanel("Finals");
-		tabbedPane.addTab("Winners Bracket", winPanel);
-		tabbedPane.addTab("Losers Bracket", losePanel);
-		tabbedPane.addTab("Finals Bracket", finalPanel);
-		cp.add(tabbedPane, BorderLayout.CENTER);
+		genPanels();
 		
 		// Frame initialization
 		setResizable(false);
@@ -126,18 +91,6 @@ public class BrackEm extends JFrame implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-//		void select(String event){
-//			if (event == "mainMenu")
-//			{  
-//				RaceGame.cp.remove(RaceGame.cards);
-//				cards = null;
-//				trackPanel = null;
-//				RaceGame.mapIndex = 0;
-//				frame.setVisible( false ); // Clear old
-//				frame.dispose(); // Clear old
-//				String [] input = {"New"};
-//				main(input); // Restart
-//			}
         if (e.getActionCommand().equals("New"))//new game on the menu bar
         {
         	if (debug){
@@ -159,7 +112,7 @@ public class BrackEm extends JFrame implements ActionListener{
             			
             			bracketData = new BracketCalc(totalPlayers);
             			
-        				genPanels();
+        				popPanels();
         			}
 
         		} catch(java.lang.NumberFormatException e1) { 
@@ -219,26 +172,41 @@ public class BrackEm extends JFrame implements ActionListener{
 	}
 	
 	private void genPanels(){
-
-//		if (panelExist){
-//			BrackEm.cp.remove(tabbedPane);
-////			cards = null;
-//			winPanel = null;
-//			losePanel = null;
-//			finalPanel = null;
-//		}
+		
+		// Content pane set-up
+		tabbedPane = new JTabbedPane();
+		winPanel = new BracketPanel("Winners");
+		losePanel = new BracketPanel("Losers");
+		finalPanel = new BracketPanel("Finals");
+		tabbedPane.addTab("Winners Bracket", winPanel);
+		tabbedPane.addTab("Losers Bracket", losePanel);
+		tabbedPane.addTab("Finals Bracket", finalPanel);
+		
+		cp.add(tabbedPane, BorderLayout.CENTER);
+		
+	}
+		
+	private void popPanels(){
+		if (panelExist){
+			BrackEm.cp.remove(tabbedPane);
+			winPanel = null;
+			losePanel = null;
+			finalPanel = null;
+			genPanels();
+			refreshFrame();
+		}
 
 		winPanel.populateWinPanel();
-		
-//		winMI.setEnabled(true);
-//		loseMI.setEnabled(true);
-//		finalMI.setEnabled(true);
-
-//		BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
-//		BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
-
-//		panelExist = true;
-//		repaint();
+		panelExist = true;
+	}
+	
+	private void refreshFrame(){
+		// Frame initialization
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		frame.setAlwaysOnTop(true);
+		frame.setMinimumSize(new Dimension(fWidth,fHeight));
+		frame.setVisible( true );
 	}
 	
 	private void invalidDiag(){
