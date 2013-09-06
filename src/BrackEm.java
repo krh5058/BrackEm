@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -71,9 +74,21 @@ public class BrackEm extends JFrame implements ActionListener{
         fileMenu.add(printMI);
         fileMenu.add(exitMI);
         
+        
+
         // Add menu Bar
         menuBar = new JMenuBar();
         menuBar.add(fileMenu);
+        
+    	if (debug){
+    		JMenu debugMenu = new JMenu("Debug");
+            JMenuItem debugMI = new JMenuItem("Debug");
+            debugMI.setActionCommand("Debug");
+            debugMI.addActionListener(this);
+            debugMenu.add(debugMI);
+            menuBar.add(debugMenu,-1);
+    	}
+        
         setJMenuBar(menuBar);
 
         // Content pane set-up
@@ -91,7 +106,7 @@ public class BrackEm extends JFrame implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("New"))//new game on the menu bar
+        if (e.getActionCommand().equals("New"))
         {
         	if (debug){
         		System.out.println("New");
@@ -121,14 +136,14 @@ public class BrackEm extends JFrame implements ActionListener{
         	}
         }
         
-        if (e.getActionCommand().equals("Print"))//new game on the menu bar
+        if (e.getActionCommand().equals("Print"))
         {
         	if (debug){
         		System.out.println("Print");
         	}
         }
         
-        if (e.getActionCommand().equals("Exit"))//new game on the menu bar
+        if (e.getActionCommand().equals("Exit"))
         {
         	// Prompt
         	int result = JOptionPane.showConfirmDialog(
@@ -143,31 +158,41 @@ public class BrackEm extends JFrame implements ActionListener{
         	}
         }
         
-//        if (e.getActionCommand().equals("Winner's"))//new game on the menu bar
-//        {
-//        	if (debug){
-//        		System.out.println("Winner's");
-//        	}
-//        	
-//            BrackEm.cardLayout.show(BrackEm.cards, "WPanel");
-//        }
-//        
-//        if (e.getActionCommand().equals("Loser's"))//new game on the menu bar
+        if (e.getActionCommand().equals("Debug"))//Debug on the menu bar
+        {
+        	System.out.println("Debug-------------");
+        	System.out.println("Debug----------------");
+        	System.out.println("Debug-------------------");
+        	String search = "Bob";
+        	String replace = "Bill";
+        	for (HashMap<Bracket, Integer> map : winPanel.hashList)
+        		for (Entry<Bracket, Integer> mapEntry : map.entrySet())
+        		{
+        			Bracket key = mapEntry.getKey();
+        			Integer value = mapEntry.getValue();
+        			int placement = key.getPlacement();
+        			byte nextplacement =  (byte) ((byte)(placement - 1) >> 1);
+        			String name = key.getID();
+        			System.out.println("Integer: " + value);
+//        			System.out.println("Converted Integer: " + Integer.toBinaryString(value));
+        			System.out.println("getPlacement(): " + placement);
+        			System.out.println("getID(): " + name);
+        			System.out.println("Next round placement (Win): " + (1+nextplacement)); // Convert so "1" starts index
+        			
+        			if (key.getID().equals(search)){
+        				System.out.println("Match*******");
+        				key.setID(replace);
+        			}
+        		}
+        }
+
+        //        if (e.getActionCommand().equals("Loser's"))
 //        {
 //        	if (debug){
 //        		System.out.println("Loser's");
 //        	}
 //        	
 //        	BrackEm.cardLayout.show(BrackEm.cards, "LPanel");
-//        }
-//        
-//        if (e.getActionCommand().equals("Finals"))//new game on the menu bar
-//        {
-//        	if (debug){
-//        		System.out.println("Finals");
-//        	}
-//        	
-//        	BrackEm.cardLayout.show(BrackEm.cards, "FPanel");
 //        }
 	}
 	

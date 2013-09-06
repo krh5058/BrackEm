@@ -1,4 +1,5 @@
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -18,11 +19,10 @@ public class Bracket extends JLabel implements MouseListener{
 	 * 
 	 */
 	
-	String ID;
-	String placement;
+	String ID = "";
+	int bracketIndex;
 	String displayName = "empty";
 	int maxCharDisp = 15;
-	Font labelFont;
 	int labelWidth;
 	int labelHeight;
 	boolean center = false;
@@ -32,7 +32,7 @@ public class Bracket extends JLabel implements MouseListener{
 	
 	private static final long serialVersionUID = 1L;
 
-	Bracket(int x, int y, boolean individual, boolean pairingtype) {
+	Bracket(int x, int y, boolean individual, boolean pairingtype, int placement) {
 		super();
 		this.setText(displayName);
 		
@@ -41,11 +41,13 @@ public class Bracket extends JLabel implements MouseListener{
 		labelHeight = y;
 		center = individual;
 		upper = pairingtype;
+		bracketIndex = placement;
 		
 		setMaximumSize(new Dimension(labelWidth,labelHeight));
 		setPreferredSize(new Dimension(labelWidth,labelHeight));
 		setMinimumSize(new Dimension(labelWidth,labelHeight));
 		setHorizontalAlignment(JLabel.CENTER);
+//		setForeground(Color.BLUE);
 		
 		addMouseListener(this);
 	}
@@ -78,14 +80,7 @@ public class Bracket extends JLabel implements MouseListener{
     			);
     	
     	if (result != null) {
-    		ID = result;
-    		if (ID.length() > maxCharDisp){
-    			displayName = ID.substring(0,15) + "...";
-    		} else {
-    			displayName = ID;
-    		}
-    		
-    		this.setText(displayName);
+    		setID(result);
     	}
 		
 	}
@@ -96,11 +91,40 @@ public class Bracket extends JLabel implements MouseListener{
 		
 	}
 	
+	void setID(String arg){
+		ID = arg;
+		setDisplayName();
+	}
+	
+	void setDisplayName(){
+		if (getID().length() > maxCharDisp){
+			displayName = getID().substring(0,15) + "...";
+		} else {
+			displayName = getID();
+		}
+//		this.setFont(new Font(this.getName(), Font.PLAIN, labelHeight/2));
+		this.setText("<html><font color='blue'>" + displayName + "</font></html>");
+	}
+	
+	String getID(){
+		return this.ID;
+	}
+	
+	int getPlacement(){
+		return bracketIndex;
+	}
+	
 	int getStringWidth(){
 		return this.getFontMetrics(this.getFont()).stringWidth(displayName);
 	}
+//	
+//	int getFontSize(){
+//		double widthRatio = (double)labelWidth / (double)getStringWidth();
+//		return (int) (this.getFont().getSize() * widthRatio);
+//		return Math.min(fontSize1, labelHeight);
+//	}
 	
-	int[] getStringX(){
+	int[] getStringXY(){
 		int stringWidth = getStringWidth();
 		int x1 = (labelWidth/2) - (stringWidth/2);
 		int x2 = (labelWidth/2) + (stringWidth/2);
@@ -113,8 +137,8 @@ public class Bracket extends JLabel implements MouseListener{
 	    Graphics2D g2 = (Graphics2D) g;
 	    g2.setStroke(new BasicStroke(3));
 	    
-	    g2.drawLine(0, labelHeight/2, getStringX()[0]-2, labelHeight/2); // Line from left to text
-	    g2.drawLine(getStringX()[1]+2, labelHeight/2, labelWidth, labelHeight/2); // Line from text to right
+	    g2.drawLine(0, labelHeight/2, getStringXY()[0]-2, labelHeight/2); // Line from left to text
+	    g2.drawLine(getStringXY()[1]+2, labelHeight/2, labelWidth, labelHeight/2); // Line from text to right
 	    
 	    if (center){
 	    } else {
