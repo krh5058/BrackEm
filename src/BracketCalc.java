@@ -16,6 +16,11 @@ public class BracketCalc {
 	int totalRoundsW;
 	int totalRoundsL;
 	
+	int initialRounds;
+	int addRoundMultiplier;
+	int firstIncoming = 0;
+	int addRoundsLessOne;
+	
 	static int log2(int a){
 		int result = 0;
 		boolean valid = isBase2(a);
@@ -97,42 +102,49 @@ public class BracketCalc {
 		int addRounds = log2(secondRoundPlayersW); // Additional rounds outside of the first winner's round
 		
 		if (addRounds==0){
-			System.out.println("Error in BracketCalc.log2()");
+			System.out.println("BracketCalc: Error in BracketCalc.log2()");
 		}
 		
 		totalRoundsW = 1 + addRounds;
 		
-		int x1;int x2;
 		if (isBase2(totalPlayersL)) {
-			x1 = 1;
+			initialRounds = 1;
 		} else {
-			x1 = 2;
+			initialRounds = 2;
 		}
 		
-		int x3 = 0;
-		if (secondRoundPlayersL==2) { // If there are no more matches to be played
-			x2 = 1;
-		} else if((addRounds-1) > (log2(secondRoundPlayersL)-1)) { // If there are more rounds of loser's entering, then there are loser rounds left
-			x3 = 1; // Add an additional round to play (not multiplied by 2)
-			x2 = 2;
+//		if (secondRoundPlayersL==2) { // If there are no more matches to be played****
+//			addRoundMultiplier = 1;
+//		} else {
+		if((addRounds-1) > (log2(secondRoundPlayersL)-1)) { // If there are more rounds of loser's entering than there are loser rounds left
+			firstIncoming = 1; // Add an additional round to play (not multiplied by 2)
+			addRoundMultiplier = 2;
 			--addRounds; // Take away from multiplier
+		} else if ((addRounds-1) == 0) { // If there are no more additional matches to be played (no more incoming losers) 
+			addRoundMultiplier = 1;
 		} else { // Multiply by 2
-			x2 = 2;
+			addRoundMultiplier = 2;
 		}
 		
-		totalRoundsL = x1 + x3 + x2*(addRounds-1);
+		addRoundsLessOne = (addRounds-1);
+		
+		totalRoundsL = initialRounds + firstIncoming + addRoundMultiplier*addRoundsLessOne;
 		
 		if (BrackEm.debug){
-			System.out.println("Total (Winner's): " + totalPlayersW);
-			System.out.println("Second Round (Winner's): " + secondRoundPlayersW);
-			System.out.println("First Round (Winner's): " + firstRoundPlayersW);
-			System.out.println("First Round By (Winner's): " + firstRoundByW);
-			System.out.println("Total Players (Loser's): " + totalPlayersL);
-			System.out.println("Second Round (Loser's): " + secondRoundPlayersL);
-			System.out.println("First Round (Loser's): " + firstRoundPlayersL);
-			System.out.println("First Round By (Loser's): " + firstRoundByL);		
-			System.out.println("Total Rounds (Winner's): " + totalRoundsW);
-			System.out.println("Total Rounds (Loser's): " + totalRoundsL);
+			System.out.println("BracketCalc: Total (Winner's): " + totalPlayersW);
+			System.out.println("BracketCalc: Second Round (Winner's): " + secondRoundPlayersW);
+			System.out.println("BracketCalc: First Round (Winner's): " + firstRoundPlayersW);
+			System.out.println("BracketCalc: First Round By (Winner's): " + firstRoundByW);
+			System.out.println("BracketCalc: Total Players (Loser's): " + totalPlayersL);
+			System.out.println("BracketCalc: Second Round (Loser's): " + secondRoundPlayersL);
+			System.out.println("BracketCalc: First Round (Loser's): " + firstRoundPlayersL);
+			System.out.println("BracketCalc: First Round By (Loser's): " + firstRoundByL);		
+			System.out.println("BracketCalc: Total Rounds (Winner's): " + totalRoundsW);
+			System.out.println("BracketCalc: Total Rounds (Loser's): " + totalRoundsL);
+			System.out.println("BracketCalc: 1/2 initial rounds: " + initialRounds);
+			System.out.println("BracketCalc: 0/1 incoming play after initial: " + firstIncoming);
+			System.out.println("BracketCalc: 1/2 Multiplier for (addRounds-1): " + addRoundMultiplier);
+			System.out.println("BracketCalc: addRounds-1: " + addRoundsLessOne);
 		}
 	}
 	
@@ -140,15 +152,43 @@ public class BracketCalc {
 		return this.totalRoundsW;
 	}
 	
+	int getTotalRoundsL(){
+		return this.totalRoundsL;
+	}
+	
 	int getFirstPlayersW(){
 		return this.firstRoundPlayersW;
+	}
+	
+	int getFirstPlayersL(){
+		return this.firstRoundPlayersL;
 	}
 	
 	int getSecondPlayersW(){
 		return this.secondRoundPlayersW;
 	}
 	
+	int getSecondPlayersL(){
+		return this.secondRoundPlayersL;
+	}
+	
 	int getFirstRoundByL(){
 		return this.firstRoundByL;
+	}
+	
+	int getInitialRounds(){
+		return this.initialRounds;
+	}
+	
+	int getFirstIncoming(){
+		return this.firstIncoming;
+	}
+	
+	int getAddRoundMultiplier(){
+		return this.addRoundMultiplier;
+	}
+	
+	int getAddRoundLessOne(){
+		return this.addRoundsLessOne;
 	}
 }

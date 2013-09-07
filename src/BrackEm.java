@@ -109,7 +109,7 @@ public class BrackEm extends JFrame implements ActionListener{
         if (e.getActionCommand().equals("New"))
         {
         	if (debug){
-        		System.out.println("New");
+        		System.out.println("BrackEm (actionPerformed): New");
         	}
         	
         	String result = JOptionPane.showInputDialog(frame,
@@ -139,7 +139,7 @@ public class BrackEm extends JFrame implements ActionListener{
         if (e.getActionCommand().equals("Print"))
         {
         	if (debug){
-        		System.out.println("Print");
+        		System.out.println("BrackEm (actionPerformed): Print");
         	}
         }
         
@@ -160,9 +160,9 @@ public class BrackEm extends JFrame implements ActionListener{
         
         if (e.getActionCommand().equals("Debug"))//Debug on the menu bar
         {
-        	System.out.println("Debug-------------");
-        	System.out.println("Debug----------------");
-        	System.out.println("Debug-------------------");
+        	System.out.println("BrackEm (actionPerformed): Debug-------------");
+        	System.out.println("BrackEm (actionPerformed): Debug----------------");
+        	System.out.println("BrackEm (actionPerformed): Debug-------------------");
         	String search = "Bob";
         	String replace = "Bill";
         	for (HashMap<Bracket, Integer> map : winPanel.hashList)
@@ -173,14 +173,14 @@ public class BrackEm extends JFrame implements ActionListener{
         			int placement = key.getPlacement();
         			byte nextplacement =  (byte) ((byte)(placement - 1) >> 1);
         			String name = key.getID();
-        			System.out.println("Integer: " + value);
+        			System.out.println("BrackEm (actionPerformed): Integer: " + value);
 //        			System.out.println("Converted Integer: " + Integer.toBinaryString(value));
-        			System.out.println("getPlacement(): " + placement);
-        			System.out.println("getID(): " + name);
-        			System.out.println("Next round placement (Win): " + (1+nextplacement)); // Convert so "1" starts index
+        			System.out.println("BrackEm (actionPerformed): getPlacement(): " + placement);
+        			System.out.println("BrackEm (actionPerformed): getID(): " + name);
+        			System.out.println("BrackEm (actionPerformed): Next round placement (Win): " + (1+nextplacement)); // Convert so "1" starts index
         			
         			if (key.getID().equals(search)){
-        				System.out.println("Match*******");
+        				System.out.println("BrackEm (actionPerformed): Match*******");
         				key.setID(replace);
         			}
         		}
@@ -222,6 +222,7 @@ public class BrackEm extends JFrame implements ActionListener{
 		}
 
 		winPanel.populateWinPanel();
+		losePanel.populateLosePanel();
 		panelExist = true;
 	}
 	
