@@ -120,7 +120,7 @@ public class BrackEm extends JFrame implements ActionListener{
         	
         	if (result != null) {
         		try {
-        			if (Integer.parseInt(result) < 3 || Integer.parseInt(result) > 31 ){
+        			if (Integer.parseInt(result) < 3 || Integer.parseInt(result) > 32 ){
         				invalidNumDiag();
         			} else {
             			int totalPlayers = Integer.parseInt(result);
@@ -163,9 +163,30 @@ public class BrackEm extends JFrame implements ActionListener{
         	System.out.println("BrackEm (actionPerformed): Debug-------------");
         	System.out.println("BrackEm (actionPerformed): Debug----------------");
         	System.out.println("BrackEm (actionPerformed): Debug-------------------");
+//        	String search = "Bob";
+//        	String replace = "Bill";
+//        	for (HashMap<Bracket, Integer> map : winPanel.hashList)
+//        		for (Entry<Bracket, Integer> mapEntry : map.entrySet())
+//        		{
+//        			Bracket key = mapEntry.getKey();
+//        			Integer value = mapEntry.getValue();
+//        			int placement = key.getPlacement();
+//        			byte nextplacement =  (byte) ((byte)(placement - 1) >> 1);
+//        			String name = key.getID();
+//        			System.out.println("BrackEm (actionPerformed): Integer: " + value);
+////        			System.out.println("Converted Integer: " + Integer.toBinaryString(value));
+//        			System.out.println("BrackEm (actionPerformed): getPlacement(): " + placement);
+//        			System.out.println("BrackEm (actionPerformed): getID(): " + name);
+//        			System.out.println("BrackEm (actionPerformed): Next round placement (Win): " + (1+nextplacement)); // Convert so "1" starts index
+//        			
+//        			if (key.getID().equals(search)){
+//        				System.out.println("BrackEm (actionPerformed): Match*******");
+//        				key.setID(replace);
+//        			}
+//        		}
         	String search = "Bob";
         	String replace = "Bill";
-        	for (HashMap<Bracket, Integer> map : winPanel.hashList)
+        	for (HashMap<Bracket, Integer> map : losePanel.hashList)
         		for (Entry<Bracket, Integer> mapEntry : map.entrySet())
         		{
         			Bracket key = mapEntry.getKey();
@@ -223,6 +244,7 @@ public class BrackEm extends JFrame implements ActionListener{
 
 		winPanel.populateWinPanel();
 		losePanel.populateLosePanel();
+		finalPanel.populateFinalPanel();
 		panelExist = true;
 	}
 	
@@ -245,7 +267,7 @@ public class BrackEm extends JFrame implements ActionListener{
 	
 	private void invalidNumDiag(){
 		JOptionPane.showMessageDialog(frame,
-				"Only 3 to 31 players are allowed.",
+				"Only 3 to 32 players are allowed.",
 				"Create a bracket",
 				JOptionPane.OK_CANCEL_OPTION
 				);

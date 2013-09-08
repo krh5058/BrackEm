@@ -47,6 +47,66 @@ public class BracketCalc {
 //		return result;
 //	}
 	
+	static int[] getFirstOrder(int numOfPlayers){
+
+		// Pre-determined numbers for logbase2((2)^(1->5))
+		// Contact for Matlab recursive script.
+		// Too much of a pain in the ass to manipulate matrices in a recursion function in Java
+		// Don't judge me....
+		
+		
+		int[] order = null;
+		switch (numOfPlayers){
+		case 2:
+			order = new int[] {1,2};
+			break;
+		case 4:
+			order = new int[] {1,2,3,4};
+			break;
+		case 8:
+			order = new int[] {1,2,5,6,3,4,7,8};
+			break;
+		case 16:
+			order = new int[] {1,2,9,10,5,6,13,14,3,4,11,12,7,8,15,16};
+			break;
+		case 32:
+			order = new int[] {1,2,17,18,9,10,25,26,5,6,21,22,13,14,29,30,3,4,19,20,11,12,27,28,7,8,23,24,15,16,31,32};
+			break;
+		}
+//		
+//		int[] order = new int[numOfPlayers];
+//		int[] array1 = new int[numOfPlayers/2];
+//		int[] array2 = new int[numOfPlayers/2];
+//
+//		int j1 = 0;
+//		int j2 = 0;
+//		for (int i=0;i<numOfPlayers;i++){
+//			if (i % 2 == 0){ // if even
+//				array1[j1] = (i+1);
+//				j1++;
+//			} else {
+//				array2[j2] = (i+1);
+//				j2++;
+//			}
+//		}
+//
+//		int i2 = 0;
+//		int i3 = 0;
+//		while(i3<numOfPlayers/4){
+//			order[i2] = array1[i3];
+//			i2++;
+//			order[i2] = array2[i3];
+//			i2++;
+//			order[i2] = array1[i3+numOfPlayers/4];
+//			i2++;
+//			order[i2] = array2[i3+numOfPlayers/4];
+//			i2++;
+//			i3++;
+//		}
+		
+		return order;
+	}
+	
 	static int [] getIntArray() {
 		return twoN;
 	}
@@ -58,11 +118,11 @@ public class BracketCalc {
 		int twoNIndex = 0;
 		boolean twoNCheck = true;
 		while (twoNCheck) {
-			if (twoNIndex > twoN.length-1){
+			if (twoNIndex > twoN.length-1){ // If reached end of twoN, scale down to max index and break
 				--twoNIndex;
 				break;
 			}
-			twoNCheck = twoN[twoNIndex] < totalPlayersW; // Less than only (Scale down)
+			twoNCheck = twoN[twoNIndex] < totalPlayersW; // Checking for iteration of log base 2 that is less than total players 
 			if (twoNCheck){
 				++twoNIndex;
 			} else {
@@ -113,9 +173,6 @@ public class BracketCalc {
 			initialRounds = 2;
 		}
 		
-//		if (secondRoundPlayersL==2) { // If there are no more matches to be played****
-//			addRoundMultiplier = 1;
-//		} else {
 		if((addRounds-1) > (log2(secondRoundPlayersL)-1)) { // If there are more rounds of loser's entering than there are loser rounds left
 			firstIncoming = 1; // Add an additional round to play (not multiplied by 2)
 			addRoundMultiplier = 2;
@@ -141,10 +198,6 @@ public class BracketCalc {
 			System.out.println("BracketCalc: First Round By (Loser's): " + firstRoundByL);		
 			System.out.println("BracketCalc: Total Rounds (Winner's): " + totalRoundsW);
 			System.out.println("BracketCalc: Total Rounds (Loser's): " + totalRoundsL);
-//			System.out.println("BracketCalc: 1/2 initial rounds: " + initialRounds);
-//			System.out.println("BracketCalc: 0/1 incoming play after initial: " + firstIncoming);
-//			System.out.println("BracketCalc: 1/2 Multiplier for (addRounds-1): " + addRoundMultiplier);
-//			System.out.println("BracketCalc: addRounds-1: " + addRoundsLessOne);
 		}
 	}
 	
@@ -170,6 +223,10 @@ public class BracketCalc {
 	
 	int getSecondPlayersL(){
 		return this.secondRoundPlayersL;
+	}
+	
+	int getFirstRoundByW(){
+		return this.firstRoundByW;
 	}
 	
 	int getFirstRoundByL(){

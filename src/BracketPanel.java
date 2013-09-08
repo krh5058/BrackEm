@@ -2,8 +2,6 @@ import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,7 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class BracketPanel extends JPanel implements ActionListener{
+public class BracketPanel extends JPanel{
 
 	/**
 	 * 
@@ -36,15 +34,8 @@ public class BracketPanel extends JPanel implements ActionListener{
 		}
         
 	}
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	void populateWinPanel(){
-
+		
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         
 		panelWidth = getWidth();
@@ -90,11 +81,11 @@ public class BracketPanel extends JPanel implements ActionListener{
 					upper = true;
 				}
 				
-				if (i==0){ // First round Bys 
-					if (ii<=BrackEm.bracketData.getFirstPlayersW()){ // Temporary placement formula (Top-most)
-
-						Bracket bracket = new Bracket(labelWidth,labelHeight,individual,upper,ii);
-						tempHashMap.put(bracket,ii);
+				if (i==0 && BrackEm.bracketData.getFirstRoundByW()!=0){ // First round placement (first round and there aren't 0 first round Bys)
+					int[] placeVals = BracketCalc.getFirstOrder(numOfLabels); // Arrange down tree
+					if (placeVals[ii-1]<=BrackEm.bracketData.getFirstPlayersW()){ // Placement value is less than the number of first round players
+						Bracket bracket = new Bracket(labelWidth,labelHeight,individual,upper,placeVals[ii-1]);
+						tempHashMap.put(bracket,placeVals[ii-1]);
 						panel.add(bracket);
 					} else {
 						panel.add(Box.createRigidArea(new Dimension(0,labelHeight)));
@@ -179,8 +170,8 @@ public class BracketPanel extends JPanel implements ActionListener{
 			System.out.println("BracketPanel (populateLosePanel): Additional rounds multiplier (1/2): " + BrackEm.bracketData.getAddRoundMultiplier());
 		}
 		
-		int [] iterationSchematic = null;
 		// Panel iteration schematic
+		int [] iterationSchematic = null;
 		if (BrackEm.bracketData.getInitialRounds()==1){
 			if (BrackEm.bracketData.getAddRoundMultiplier()==1){ // 3 rounds?, [1 0 1]
 				iterationSchematic = getIterationSchematic(1, numOfLabels.length);
@@ -234,11 +225,13 @@ public class BracketPanel extends JPanel implements ActionListener{
 				if (j==numOfLabels.length-1){
 					if (BrackEm.debug){
 						System.out.println("BracketPanel (populateLosePanel): Final Non-By schematic");
+						jPanel = nonByLosePanel(numOfLabels[j],true);
+						this.add(jPanel);
 					}
 				} else {
 					if (BrackEm.debug){
 						System.out.println("BracketPanel (populateLosePanel): Non-By schematic");
-						jPanel = nonByLosePanel(numOfLabels[j]);
+						jPanel = nonByLosePanel(numOfLabels[j],false);
 						this.add(jPanel);
 					}
 					
@@ -250,6 +243,71 @@ public class BracketPanel extends JPanel implements ActionListener{
 		}
 
 	}	
+	
+	void populateFinalPanel(){
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        
+		panelWidth = getWidth();
+		panelHeight = getHeight();
+		
+		int startingLabels = 3;
+		
+		labelWidth = panelWidth/startingLabels; 
+		labelHeight = panelHeight/3;
+		
+		if (BrackEm.debug){
+			System.out.println("BracketPanel (populateFinalPanel): finalPanel width: " + panelWidth);
+			System.out.println("BracketPanel (populateFinalPanel): finalPanel height: " + panelHeight);
+			System.out.println("BracketPanel (populateFinalPanel): Rounds: " + 3);
+			System.out.println("BracketPanel (populateFinalPanel): Label width: " + labelWidth);
+			System.out.println("BracketPanel (populateFinalPanel): Start labels: " + startingLabels);
+		}
+		
+		HashMap<Bracket, Integer> tempHashMap1 = new HashMap<Bracket, Integer>();
+		
+		JPanel panel1 = new JPanel();
+		panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
+
+		Bracket bracket1_1 = new Bracket(labelWidth,labelHeight,false,true,1);
+		tempHashMap1.put(bracket1_1,1);
+		panel1.add(bracket1_1);
+		
+		Bracket bracket1_2 = new Bracket(labelWidth,labelHeight,false,false,2);
+		tempHashMap1.put(bracket1_2,2);
+		panel1.add(bracket1_2);
+
+		panel1.add(Box.createRigidArea(new Dimension(0,labelHeight)));
+		hashList.add(tempHashMap1);
+		this.add(panel1);
+
+		HashMap<Bracket, Integer> tempHashMap2 = new HashMap<Bracket, Integer>();
+		
+		JPanel panel2 = new JPanel();
+		panel2.setLayout(new BoxLayout(panel2, BoxLayout.Y_AXIS));		
+		
+		Bracket bracket2_1 = new Bracket(labelWidth,labelHeight*2,false,true,1);
+		tempHashMap2.put(bracket2_1,1);
+		panel2.add(bracket2_1);
+		
+		Bracket bracket2_2 = new Bracket(labelWidth,labelHeight,false,false,2);
+		tempHashMap2.put(bracket2_2,2);
+		panel2.add(bracket2_2);
+		
+		hashList.add(tempHashMap2);
+		this.add(panel2);
+		
+		HashMap<Bracket, Integer> tempHashMap3 = new HashMap<Bracket, Integer>();
+		
+		JPanel panel3 = new JPanel();
+		panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));		
+		
+		Bracket bracket3_1 = new Bracket(labelWidth,panelHeight,true,true,1);
+		tempHashMap2.put(bracket3_1,1);
+		panel3.add(bracket3_1);
+		
+		hashList.add(tempHashMap3);
+		this.add(panel3);
+	}
 	
 	int[] getIterationSchematic(int format, int numOfRounds){
 		int [] iterationSchematic = new int [numOfRounds];
@@ -376,11 +434,6 @@ public class BracketPanel extends JPanel implements ActionListener{
 		int currentHeight = getNormalLabelHeight(numOfLabels);
 		
 		for(int n=1;n<=numOfLabels;n++) {
-			
-//			if (n==numOfLabels){ // Last panel is individual
-//				individual = true;
-//			}
-			
 			if ( (n % 2) == 0){ // Check even/odd for upper/lower
 				upper = false;
 			} else {
@@ -407,11 +460,9 @@ public class BracketPanel extends JPanel implements ActionListener{
 
 		boolean upper = true;
 		boolean individual = false;
-
-//		if (i==BrackEm.bracketData.getTotalRoundsW()){ // Last panel is individual
-//			individual = true;
-//		}
 		int currentHeight = getSmallestLabelHeight();
+		
+		int[] placeVals = BracketCalc.getFirstOrder(numOfLabels); // Arrange down tree
 		
 		for(int n=1;n<=numOfLabels;n++) {
 
@@ -421,9 +472,9 @@ public class BracketPanel extends JPanel implements ActionListener{
 				upper = true;
 			}
 			
-			if (n<=BrackEm.bracketData.getFirstPlayersL()){ // Temporary placement formula (Top-most)
-				Bracket bracket = new Bracket(labelWidth,currentHeight,individual,upper,n);
-				tempHashMap.put(bracket,n);
+			if (placeVals[n-1]<=BrackEm.bracketData.getFirstPlayersL()){ // Temporary placement formula (Top-most)
+				Bracket bracket = new Bracket(labelWidth,currentHeight,individual,upper,placeVals[n-1]);
+				tempHashMap.put(bracket,placeVals[n-1]);
 				panel.add(bracket);
 			} else {
 				panel.add(Box.createRigidArea(new Dimension(0,currentHeight)));
@@ -445,10 +496,6 @@ public class BracketPanel extends JPanel implements ActionListener{
 
 		boolean upper = true;
 		boolean individual = false;
-
-//		if (i==BrackEm.bracketData.getTotalRoundsW()){ // Last panel is individual
-//			individual = true;
-//		}
 		int currentHeight1 = getByLabelHeight(numOfLabels);
 		int currentHeight2 = getSmallestLabelHeight();
 
@@ -487,62 +534,46 @@ public class BracketPanel extends JPanel implements ActionListener{
 		
 	}
 	
-	JPanel nonByLosePanel(int numOfLabels){
+	JPanel nonByLosePanel(int numOfLabels, boolean last){
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		HashMap<Bracket, Integer> tempHashMap = new HashMap<Bracket, Integer>();
 
 		boolean upper = true;
-		boolean individual = false;
-
-//		if (i==BrackEm.bracketData.getTotalRoundsW()){ // Last panel is individual
-//			individual = true;
-//		}
+		boolean individual;
+		if(last){
+			individual = true;
+		} else {
+			individual = false;
+		}
 		
 		int lastHeight = getByLabelHeight(numOfLabels*2);
 		int currentHeight1 = lastHeight/2;
 		int currentHeight2 = getSmallestLabelHeight();
 		
 		for(int n=1;n<=numOfLabels;n++) {
-//			if (Math.ceil(((double)n/2)) % 2 == 0) { // if ceil(half) even
-//				if ( (n % 2) == 0){ // If even
-//					upper = false;
-//					Bracket bracket = new Bracket(labelWidth,currentHeight1,individual,upper,n);
-//					tempHashMap.put(bracket,n);
-//					panel.add(bracket);
-//
-//					panel.add(Box.createRigidArea(new Dimension(0,currentHeight2)));
-//				} else {
-//					upper = true;
-//					panel.add(Box.createRigidArea(new Dimension(labelWidth,currentHeight2)));
-//
-//					Bracket bracket = new Bracket(labelWidth,currentHeight1,individual,upper,n);
-//					tempHashMap.put(bracket,n);
-//					panel.add(bracket);
-//
-//					panel.add(Box.createRigidArea(new Dimension(0,lastHeight))); // Empty space, replace with line label
-//				}
-//			} else {
-				if ( (n % 2) == 0){ // If even
-					upper = false;
-					Bracket bracket = new Bracket(labelWidth,currentHeight1,individual,upper,n);
-					tempHashMap.put(bracket,n);
-					panel.add(bracket);
+			if ( (n % 2) == 0){ // If even
+				upper = false;
+				Bracket bracket = new Bracket(labelWidth,currentHeight1,individual,upper,n);
+				tempHashMap.put(bracket,n);
+				panel.add(bracket);
 
-					panel.add(Box.createRigidArea(new Dimension(0,currentHeight2)));
+				panel.add(Box.createRigidArea(new Dimension(0,currentHeight2)));
+			} else {
+				upper = true;
+				panel.add(Box.createRigidArea(new Dimension(0,currentHeight2)));
+
+				Bracket bracket = new Bracket(labelWidth,currentHeight1,individual,upper,n);
+				tempHashMap.put(bracket,n);
+				panel.add(bracket);
+
+				if (last) {
+					panel.add(Box.createRigidArea(new Dimension(0,lastHeight)));
 				} else {
-					upper = true;
-					panel.add(Box.createRigidArea(new Dimension(0,currentHeight2)));
-
-					Bracket bracket = new Bracket(labelWidth,currentHeight1,individual,upper,n);
-					tempHashMap.put(bracket,n);
-					panel.add(bracket);
-
-//					panel.add(Box.createRigidArea(new Dimension(0,lastHeight))); // Empty space, replace with line label
 					panel.add(new BlankLineLabel(lastHeight));
 				}
-//			}
+			}
 				
 		}
 		

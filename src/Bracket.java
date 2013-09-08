@@ -1,7 +1,6 @@
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+//import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -102,7 +101,7 @@ public class Bracket extends JLabel implements MouseListener{
 		} else {
 			displayName = getID();
 		}
-//		this.setFont(new Font(this.getName(), Font.PLAIN, labelHeight/2));
+//		this.setFont(new Font(this.getName(), Font.PLAIN, getFontSize()));
 		this.setText("<html><font color='blue'>" + displayName + "</font></html>");
 	}
 	
@@ -117,13 +116,13 @@ public class Bracket extends JLabel implements MouseListener{
 	int getStringWidth(){
 		return this.getFontMetrics(this.getFont()).stringWidth(displayName);
 	}
-//	
+	
 //	int getFontSize(){
 //		double widthRatio = (double)labelWidth / (double)getStringWidth();
-//		return (int) (this.getFont().getSize() * widthRatio);
-//		return Math.min(fontSize1, labelHeight);
+//		double fontSize1 = this.getFont().getSize() * widthRatio;
+//		return (int) Math.min(fontSize1, labelHeight);
 //	}
-	
+//	
 	int[] getStringXY(){
 		int stringWidth = getStringWidth();
 		int x1 = (labelWidth/2) - (stringWidth/2);
