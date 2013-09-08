@@ -25,7 +25,7 @@ public class BrackEm extends JFrame implements ActionListener{
 	 */
 	
 	// General
-	static boolean debug = true;
+	static boolean debug = false;
 	static BrackEm frame; // Static frame for easy reference
 	protected static Container cp;
 	protected JTabbedPane tabbedPane;
