@@ -141,10 +141,10 @@ public class BracketCalc {
 			System.out.println("BracketCalc: First Round By (Loser's): " + firstRoundByL);		
 			System.out.println("BracketCalc: Total Rounds (Winner's): " + totalRoundsW);
 			System.out.println("BracketCalc: Total Rounds (Loser's): " + totalRoundsL);
-			System.out.println("BracketCalc: 1/2 initial rounds: " + initialRounds);
-			System.out.println("BracketCalc: 0/1 incoming play after initial: " + firstIncoming);
-			System.out.println("BracketCalc: 1/2 Multiplier for (addRounds-1): " + addRoundMultiplier);
-			System.out.println("BracketCalc: addRounds-1: " + addRoundsLessOne);
+//			System.out.println("BracketCalc: 1/2 initial rounds: " + initialRounds);
+//			System.out.println("BracketCalc: 0/1 incoming play after initial: " + firstIncoming);
+//			System.out.println("BracketCalc: 1/2 Multiplier for (addRounds-1): " + addRoundMultiplier);
+//			System.out.println("BracketCalc: addRounds-1: " + addRoundsLessOne);
 		}
 	}
 	
