@@ -225,16 +225,17 @@ public class BracketPanel extends JPanel{
 				if (j==numOfLabels.length-1){
 					if (BrackEm.debug){
 						System.out.println("BracketPanel (populateLosePanel): Final Non-By schematic");
-						jPanel = nonByLosePanel(numOfLabels[j],true);
-						this.add(jPanel);
 					}
+
+					jPanel = nonByLosePanel(numOfLabels[j],true);
+					this.add(jPanel);
 				} else {
 					if (BrackEm.debug){
 						System.out.println("BracketPanel (populateLosePanel): Non-By schematic");
-						jPanel = nonByLosePanel(numOfLabels[j],false);
-						this.add(jPanel);
 					}
-					
+
+					jPanel = nonByLosePanel(numOfLabels[j],false);
+					this.add(jPanel);
 				}
 				
 				break;
