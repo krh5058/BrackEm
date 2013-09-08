@@ -1,3 +1,5 @@
+package BrackEm;
+
 // Algorithm behind calculating number of players in Winner's and Loser's brackets.
 // No bys past second round.
 // So many hours into figuring this out...
@@ -53,7 +55,6 @@ public class BracketCalc {
 		// Contact for Matlab recursive script.
 		// Too much of a pain in the ass to manipulate matrices in a recursion function in Java
 		// Don't judge me....
-		
 		
 		int[] order = null;
 		switch (numOfPlayers){

@@ -1,3 +1,5 @@
+package BrackEm;
+
 import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -21,6 +23,7 @@ public class BracketPanel extends JPanel{
 	protected int labelWidth;
 	protected int labelHeight;
 	protected int smallestHeight;
+	protected int fontSize;
 
 	ArrayList<HashMap<Bracket, Integer>> hashList = new ArrayList<HashMap<Bracket, Integer>>();
 	

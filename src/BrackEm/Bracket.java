@@ -1,12 +1,15 @@
+package BrackEm
+;
 import java.awt.BasicStroke;
 import java.awt.Dimension;
-//import java.awt.Font;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
@@ -20,7 +23,7 @@ public class Bracket extends JLabel implements MouseListener{
 	
 	String ID = "";
 	int bracketIndex;
-	String displayName = "empty";
+	String displayName = "";
 	int maxCharDisp = 15;
 	int labelWidth;
 	int labelHeight;
@@ -41,12 +44,13 @@ public class Bracket extends JLabel implements MouseListener{
 		center = individual;
 		upper = pairingtype;
 		bracketIndex = placement;
+
+		this.setFont(new Font(this.getName(), Font.PLAIN, this.getFont().getSize()*7/4));
 		
 		setMaximumSize(new Dimension(labelWidth,labelHeight));
 		setPreferredSize(new Dimension(labelWidth,labelHeight));
 		setMinimumSize(new Dimension(labelWidth,labelHeight));
 		setHorizontalAlignment(JLabel.CENTER);
-//		setForeground(Color.BLUE);
 		
 		addMouseListener(this);
 	}
@@ -72,11 +76,13 @@ public class Bracket extends JLabel implements MouseListener{
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-    	String result = JOptionPane.showInputDialog(BrackEm.frame,
+		String result = (String) JOptionPane.showInputDialog(BrackEm.frame,
     			"Edit player",
     			"Edit player",
-    			JOptionPane.OK_CANCEL_OPTION
-    			);
+    			JOptionPane.OK_CANCEL_OPTION,
+    			createImageIcon("images/blank.png"),
+    			null,
+    			getID());
     	
     	if (result != null) {
     		setID(result);
@@ -88,6 +94,17 @@ public class Bracket extends JLabel implements MouseListener{
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
+		
+	}
+	/** Returns an ImageIcon, or null if the path was invalid. */
+	protected ImageIcon createImageIcon(String path) {
+	    java.net.URL imgURL = getClass().getClassLoader().getResource(path);
+	    if (imgURL != null) {
+	        return new ImageIcon(imgURL);
+	    } else {
+	        System.err.println("Couldn't find file: " + path);
+	        return null;
+	    }
 	}
 	
 	void setID(String arg){
@@ -101,7 +118,6 @@ public class Bracket extends JLabel implements MouseListener{
 		} else {
 			displayName = getID();
 		}
-//		this.setFont(new Font(this.getName(), Font.PLAIN, getFontSize()));
 		this.setText("<html><font color='blue'>" + displayName + "</font></html>");
 	}
 	
@@ -116,13 +132,6 @@ public class Bracket extends JLabel implements MouseListener{
 	int getStringWidth(){
 		return this.getFontMetrics(this.getFont()).stringWidth(displayName);
 	}
-	
-//	int getFontSize(){
-//		double widthRatio = (double)labelWidth / (double)getStringWidth();
-//		double fontSize1 = this.getFont().getSize() * widthRatio;
-//		return (int) Math.min(fontSize1, labelHeight);
-//	}
-//	
 	int[] getStringXY(){
 		int stringWidth = getStringWidth();
 		int x1 = (labelWidth/2) - (stringWidth/2);
