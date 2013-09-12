@@ -32,7 +32,7 @@ public class BrackEm extends JFrame implements ActionListener{
 	 */
 
 	// General
-	static boolean debug = false;
+	static boolean debug = true;
 	static BrackEm frame; // Static frame for easy reference
 	protected JTabbedPane tabbedPane;
 	protected BracketPanel winPanel;
@@ -70,8 +70,8 @@ public class BrackEm extends JFrame implements ActionListener{
 		newMI.setActionCommand("New");
 		newMI.addActionListener(this);
 
-		printMI = new JMenuItem("Print");
-		printMI.setActionCommand("Print");
+		printMI = new JMenuItem("Save");
+		printMI.setActionCommand("Save");
 		printMI.setEnabled(false);
 		printMI.addActionListener(this);
 
@@ -170,10 +170,10 @@ public class BrackEm extends JFrame implements ActionListener{
 			}
 		}
 
-		if (e.getActionCommand().equals("Print"))
+		if (e.getActionCommand().equals("Save"))
 		{
 			if (debug){
-				System.out.println("BrackEm (actionPerformed): Print");
+				System.out.println("BrackEm (actionPerformed): Save");
 			}
 
 			BufferedImage winImg = ScreenImage.createImage(winPanel);
