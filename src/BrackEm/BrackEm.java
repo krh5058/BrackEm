@@ -35,9 +35,9 @@ public class BrackEm extends JFrame implements ActionListener{
 	static boolean debug = true;
 	static BrackEm frame; // Static frame for easy reference
 	protected JTabbedPane tabbedPane;
-	protected BracketPanel winPanel;
-	protected BracketPanel losePanel; 
-	protected BracketPanel finalPanel;
+	static protected BracketPanel winPanel;
+	static protected BracketPanel losePanel; 
+	static protected BracketPanel finalPanel;
 	protected boolean panelExist = false;
 
 	// Data
@@ -116,9 +116,9 @@ public class BrackEm extends JFrame implements ActionListener{
 		setIconImage(icon.getImage());
 		
 		// Frame initialization
-		setResizable(false);
+		setResizable(true);
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		setAlwaysOnTop(true);
+		setAlwaysOnTop(false);
 		setMinimumSize(new Dimension(fWidth,fHeight));
 		setVisible( true );
 	}
@@ -161,6 +161,8 @@ public class BrackEm extends JFrame implements ActionListener{
 
 							genPanels();
 							popPanels();
+							bracketData.loserPlacementCalc();
+									
 						}
 
 					} catch(java.lang.NumberFormatException e1) { 
@@ -220,29 +222,34 @@ public class BrackEm extends JFrame implements ActionListener{
 			System.out.println("BrackEm (actionPerformed): Debug-------------");
 			System.out.println("BrackEm (actionPerformed): Debug----------------");
 			System.out.println("BrackEm (actionPerformed): Debug-------------------");
-			//        	String search = "Bob";
-			//        	String replace = "Bill";
-			//        	for (HashMap<Bracket, Integer> map : winPanel.hashList)
-			//        		for (Entry<Bracket, Integer> mapEntry : map.entrySet())
-			//        		{
-			//        			Bracket key = mapEntry.getKey();
-			//        			Integer value = mapEntry.getValue();
-			//        			int placement = key.getPlacement();
-			//        			byte nextplacement =  (byte) ((byte)(placement - 1) >> 1);
-			//        			String name = key.getID();
-			//        			System.out.println("BrackEm (actionPerformed): Integer: " + value);
-			////        			System.out.println("Converted Integer: " + Integer.toBinaryString(value));
-			//        			System.out.println("BrackEm (actionPerformed): getPlacement(): " + placement);
-			//        			System.out.println("BrackEm (actionPerformed): getID(): " + name);
-			//        			System.out.println("BrackEm (actionPerformed): Next round placement (Win): " + (1+nextplacement)); // Convert so "1" starts index
-			//        			
-			//        			if (key.getID().equals(search)){
-			//        				System.out.println("BrackEm (actionPerformed): Match*******");
-			//        				key.setID(replace);
-			//        			}
-			//        		}
+			System.out.println("BrackEm (actionPerformed): Winner's-------------");
 			String search = "Bob";
 			String replace = "Bill";
+			for (HashMap<Bracket, Integer> map : winPanel.hashList)
+				for (Entry<Bracket, Integer> mapEntry : map.entrySet())
+				{
+					Bracket key = mapEntry.getKey();
+					Integer value = mapEntry.getValue();
+					int placement = key.getPlacement();
+					byte nextplacement =  (byte) ((byte)(placement - 1) >> 1);
+					String name = key.getID();
+					System.out.println("BrackEm (actionPerformed): HashMap Value: " + value);
+					//        			System.out.println("Converted Integer: " + Integer.toBinaryString(value));
+					System.out.println("BrackEm (actionPerformed): getPlacement(): " + placement);
+					System.out.println("BrackEm (actionPerformed): getID(): " + name);
+					System.out.println("BrackEm (actionPerformed): Next round placement (Win): " + (1+nextplacement)); // Convert so "1" starts index
+
+					if (key.getID().equals(search)){
+						System.out.println("BrackEm (actionPerformed): Match*******");
+						key.setID(replace);
+					}
+				}
+			System.out.println("BrackEm (actionPerformed): Debug-------------");
+			System.out.println("BrackEm (actionPerformed): Debug----------------");
+			System.out.println("BrackEm (actionPerformed): Debug-------------------");
+			System.out.println("BrackEm (actionPerformed): Loser's-------------");
+//			String search = "Bob";
+//			String replace = "Bill";
 			for (HashMap<Bracket, Integer> map : losePanel.hashList)
 				for (Entry<Bracket, Integer> mapEntry : map.entrySet())
 				{
@@ -251,7 +258,7 @@ public class BrackEm extends JFrame implements ActionListener{
 					int placement = key.getPlacement();
 					byte nextplacement =  (byte) ((byte)(placement - 1) >> 1);
 					String name = key.getID();
-					System.out.println("BrackEm (actionPerformed): Integer: " + value);
+					System.out.println("BrackEm (actionPerformed): HashMap Value: " + value);
 					//        			System.out.println("Converted Integer: " + Integer.toBinaryString(value));
 					System.out.println("BrackEm (actionPerformed): getPlacement(): " + placement);
 					System.out.println("BrackEm (actionPerformed): getID(): " + name);
@@ -270,7 +277,7 @@ public class BrackEm extends JFrame implements ActionListener{
 				System.out.println("About");
 			}
 
-			String infoString = "v1.0\nLast updated Sept. 8th, 2013\nAuthor: Ken Hwang\nDesign: Shane Walker\nDouble elimination bracket generator";
+			String infoString = "v1.0\nLast updated Sept. 15th, 2013\nAuthor: Ken Hwang\nDesign: Shane Walker\nDouble elimination bracket generator";
 			JOptionPane.showMessageDialog(frame,infoString,"About BrackEm",JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
@@ -302,9 +309,9 @@ public class BrackEm extends JFrame implements ActionListener{
 
 	private void refreshFrame(){
 		// Frame initialization
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		frame.setAlwaysOnTop(true);
+		frame.setAlwaysOnTop(false);
 		frame.setMinimumSize(new Dimension(fWidth,fHeight));
 		frame.setVisible( true );
 	}
@@ -335,6 +342,117 @@ public class BrackEm extends JFrame implements ActionListener{
 		}
 	}
 
+	protected static void bracketUpdate(int round, int placement, String name){
+		if (debug){
+			System.out.println("BrackEm (bracketUpdate): Bracket changed -- Round: " + round + ", Placement: " + placement + ", Name: " + name);
+		}
+		
+//		HashMap<Bracket, Integer> searchList = null; // The HashMap for the specified round
+//		int effectedPanels;
+		
+		switch (name){
+		case "Winners":
+//			searchList = winPanel.hashList.get(round);
+			
+			int[] samePanelEffectedBrackets = bracketData.getSamePanelEffectedBrackets(placement);
+			int[] loserPanelEffectedBracketAndRound = bracketData.getLoserPanelEffectedRounds(placement, placementToValue(winPanel.hashList.get(round),placement),round);
+
+			if (debug){
+				System.out.println("BrackEm (bracketUpdate): Paired bracket effected: " + samePanelEffectedBrackets[0]);
+				System.out.println("BrackEm (bracketUpdate): Next round bracket effected: " + samePanelEffectedBrackets[1]);
+				System.out.println("BrackEm (bracketUpdate): Loser panel round effected: " + loserPanelEffectedBracketAndRound[0]);
+				System.out.println("BrackEm (bracketUpdate): Loser panel bracket effected: " + loserPanelEffectedBracketAndRound[1]);
+			}
+			
+			if (round==(bracketData.getTotalRoundsW()-1)){ // Include finals
+				// TODO Include final panel updating
+			}
+			
+			break;
+		case "Losers":
+//			int[] samePlanelEffectedBrackets = bracketData.getSamePanelEffectedBrackets(placement);
+			if (round==(bracketData.getTotalRoundsL()-1)){ // Include finals
+				// TODO Include final panel updating
+			}
+			break;
+		case "Finals":
+//			int[] samePanelEffectedBrackets = bracketData.getSamePanelEffectedBrackets(placement);
+			break;
+		}
+		
+//		for (Entry<Bracket, Integer> entry: searchList.entrySet())
+//		{
+//			Bracket key = mapEntry.getKey();
+//			Integer value = mapEntry.getValue();
+//			int entryPlacement = ((Bracket) entry.getKey()).getPlacement();
+//			byte nextplacement =  (byte) ((byte)(placement - 1) >> 1);
+//			String name = key.getID();
+//			boolean decided = key.getDecided();
+//			System.out.println("BrackEm (actionPerformed): HashMap Value: " + value);
+			//        			System.out.println("Converted Integer: " + Integer.toBinaryString(value));
+//			System.out.println("BrackEm (actionPerformed): getPlacement(): " + placement);
+//			System.out.println("BrackEm (actionPerformed): getID(): " + name);
+//			System.out.println("BrackEm (actionPerformed): getDecided(): " + decided);
+//			System.out.println("BrackEm (actionPerformed): Next round placement (Win): " + (1+nextplacement)); // Convert so "1" starts index
+
+//			if (decided){
+//				System.out.println("BrackEm (actionPerformed): ********Decided*******");
+//			}
+			
+//			if (entryPlacement==placement){
+//				System.out.println("BrackEm (actionPerformed): getPlacement() matched: " + placement);
+//				System.out.println("BrackEm (actionPerformed): HashMap Value "  + entry.getValue());
+//				break;
+//			}
+			
+//		}
+
+//		bracketData.getEffectedBrackets();
+		
+//		for (HashMap<Bracket, Integer> map : winPanel.hashList)
+//			for (Entry<Bracket, Integer> mapEntry : map.entrySet())
+//			{
+//				Bracket key = mapEntry.getKey();
+//				Integer value = mapEntry.getValue();
+//				int placement = key.getPlacement();
+//				byte nextplacement =  (byte) ((byte)(placement - 1) >> 1);
+//				String name = key.getID();
+//				boolean decided = key.getDecided();
+//				System.out.println("BrackEm (actionPerformed): HashMap Value: " + value);
+//				//        			System.out.println("Converted Integer: " + Integer.toBinaryString(value));
+//				System.out.println("BrackEm (actionPerformed): getPlacement(): " + placement);
+//				System.out.println("BrackEm (actionPerformed): getID(): " + name);
+//				System.out.println("BrackEm (actionPerformed): getDecided(): " + decided);
+//				System.out.println("BrackEm (actionPerformed): Next round placement (Win): " + (1+nextplacement)); // Convert so "1" starts index
+//
+//				if (decided){
+//					System.out.println("BrackEm (actionPerformed): ********Decided*******");
+//				}
+//			}
+	}
+	
+	static int placementToValue(HashMap<Bracket, Integer> hashMap, int placement){
+		
+		int out = 0;
+		
+		for (Entry<Bracket, Integer> entry: hashMap.entrySet())
+		{
+			Bracket key = entry.getKey();
+			Integer value = entry.getValue();
+			int entryPlacement = key.getPlacement();
+			
+			if (entryPlacement==placement){
+				System.out.println("BrackEm (placementToValue): getPlacement() matched: " + placement);
+				System.out.println("BrackEm (placementToValue): HashMap Value: "  + value);
+				out = value;
+				break;
+			}
+			
+		}
+		
+		return out;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		BrackEm frame = new BrackEm();

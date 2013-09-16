@@ -1,5 +1,10 @@
 package BrackEm;
 
+import java.util.Arrays;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
+
 // Algorithm behind calculating number of players in Winner's and Loser's brackets.
 // No bys past second round.
 // So many hours into figuring this out...
@@ -22,6 +27,9 @@ public class BracketCalc {
 	int addRoundMultiplier;
 	int firstIncoming = 0;
 	int addRoundsLessOne;
+	
+	int initLoserPlacementType; // 1: (1/2 Base2 + 1 -> Base2), 2: (Base2 + 1) -> (1/2 Base2)
+	boolean[] quadrupletIndices; // Only for Loser Placement type 1
 	
 	static int log2(int a){
 		int result = 0;
@@ -131,6 +139,14 @@ public class BracketCalc {
 			}
 		}
 		
+		int halfBase2 = twoN[twoNIndex] + (twoN[twoNIndex]/2); 
+		
+		if ((totalPlayersW > halfBase2) & (totalPlayersW <= twoN[twoNIndex]*2)){
+			initLoserPlacementType = 1;
+		} else {
+			initLoserPlacementType = 2;
+		}
+		
 		secondRoundPlayersW = twoN[twoNIndex];
 		firstRoundPlayersW = 2*(totalPlayersW - secondRoundPlayersW);
 		firstRoundByW = totalPlayersW - firstRoundPlayersW;
@@ -199,7 +215,131 @@ public class BracketCalc {
 			System.out.println("BracketCalc: First Round By (Loser's): " + firstRoundByL);		
 			System.out.println("BracketCalc: Total Rounds (Winner's): " + totalRoundsW);
 			System.out.println("BracketCalc: Total Rounds (Loser's): " + totalRoundsL);
+			System.out.println("BracketCalc: Loser Placement Type: " + initLoserPlacementType);
 		}
+		
+	}
+	
+	void loserPlacementCalc(){
+		
+		if (initLoserPlacementType==1){
+
+			if (BrackEm.debug){
+				System.out.println("BracketCalc (loserPlacementCalc): Loser placement type 1 calculations");
+			}
+
+			quadrupletIndices = getQuadruplets();
+
+		} else if (initLoserPlacementType==2){
+		}
+	}
+	
+	int[] getSamePanelEffectedBrackets(int placement){
+		int[] out = new int[2]; // Always 2 brackets effected
+		
+		int pairedPlacement = ((byte)(placement - 1) ^ 1) + 1;
+		int nextPlacement =  ((byte)(placement - 1) >> 1) + 1;
+		
+		out[0] = pairedPlacement; // First is paired bracket
+		out[1] = nextPlacement; // Second is next round bracket
+		
+		return out;
+	}
+	
+	int[] getLoserPanelEffectedRounds(int placement, int value, int round){
+		int[] loserPlacementOut = new int[2];
+		int loserRound = 0;
+		int loserPlacement = 0;
+
+		if (initLoserPlacementType==1){
+			
+			if (round==0){ // First round loser placement
+
+				if (quadrupletIndices[value-1]){ // Quad match (by value)
+					int bytePlacement = (placement - 1);
+					int bitMask = 1 << 1;
+					if ((bytePlacement & bitMask)!=0){ // Check for order 1 bit on/off
+						System.out.println("BracketCalc (getLoserPanelEffectedRounds): Order 1 bit on");
+						loserPlacement = bytePlacement & ~bitMask; // Turn off order 1 
+						loserPlacement = loserPlacement | 1; // Turn on order 0;
+					} else {
+						System.out.println("BracketCalc (getLoserPanelEffectedRounds): Order 1 bit off");
+						loserPlacement = bytePlacement & ~1; // Turn off order 0;
+					}
+					
+					loserPlacement++; // Return to i0 = 1 index
+					loserRound = 0; // First init round
+				} else { // Match 1st W to 2nd L 
+					loserPlacement =  ((byte)(placement - 1) >> 1) + 1;
+					loserRound = 1; // Second init round
+				}
+			} // TODO Need second round loser placement, CrossTree
+			
+		} else if (initLoserPlacementType==2){
+			// TODO Cross Tree 2nd W > 2nd L, Slide blocked to Bot of 1st L, Match 1st W > 1st L
+		}
+		
+		loserPlacementOut[0] = loserRound;
+		loserPlacementOut[1] = loserPlacement;
+		
+		return loserPlacementOut;
+	}
+	
+	boolean[] getQuadruplets(){ // Find quadruplets for quad match algorithm
+		Integer[] array1 = new Integer[getFirstPlayersW()];
+
+		// Get bitwise >> 2 placement numbers
+		for (Entry<Bracket, Integer> mapEntry : BrackEm.winPanel.hashList.get(0).entrySet()) // Get all first round (0) brackets
+		{
+			Bracket key = mapEntry.getKey();
+			int value = mapEntry.getValue();
+			int placement = key.getPlacement();
+			array1[value-1] = ((placement - 1) >> 2); // Enter by value
+			
+			if (BrackEm.debug){
+				System.out.println("BracketCalc (getQuadruplets): getValue() : " + value);
+				System.out.println("BracketCalc (getQuadruplets): getPlacement() >> 2: " + array1[value-1]);
+			}
+		}
+		
+		// Unique placement values
+		Set<Integer> uniqKeys = new TreeSet<Integer>();
+		uniqKeys.addAll(Arrays.asList(array1));
+		if (BrackEm.debug){
+			System.out.println("uniqKeys: " + uniqKeys);
+		}
+		
+		int[] array2 = new int[uniqKeys.size()];
+		boolean[] array3 = new boolean[uniqKeys.size()];
+		
+		// Iterate through placement numbers and count if any unique numbers reach 4 counts
+		for (Integer i : array1){
+			if (uniqKeys.contains(i)){
+//				if (BrackEm.debug){
+//					System.out.println("BracketCalc (getQuadruplets): Found " + i);
+//				}
+				array2[i]++;
+				if (array2[i]==4){
+					array3[i] = true;
+					if (BrackEm.debug){
+						System.out.println("BracketCalc (getQuadruplets): Value " + i + " is a quadruplet");
+					}
+				}
+			}
+		}
+		
+		boolean[] out = new boolean[array1.length];
+		
+		for (int j = 0;j<array1.length;j++){
+			if (array3[array1[j]]){
+//				if (BrackEm.debug){
+//					System.out.println("BracketCalc (getQuadruplets): Placement value " + j + " is a quadruplet index");
+//				}
+				out[j] = true;
+			}
+		}
+			
+		return out;
 	}
 	
 	int getTotalRoundsW(){
